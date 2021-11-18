@@ -72,7 +72,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Unit test
-      run: dotnet test "./CiCdInlämning1Tests/CiCdAssignment1Tests.csproj" --verbosity normal
+      run: dotnet test "./CiCdAssignment1Test/CiCdAssignment1Tests.csproj" --verbosity normal
     - name: Integration test
       run: dotnet test "./IntegrationTests/IntegrationTests.csproj" --verbosity normal
   

@@ -1,0 +1,105 @@
+name: .NET
+
+on:
+  push:
+    branches: [ benny*, hocke* ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  development:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+      url: https://github.com/Potatismoose/CiCdInl-mning1/tree/develop
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore  
+      
+  staging:
+    if: github.event_name == 'pull_request'
+    runs-on: ${{ matrix.os }}
+    strategy: 
+     matrix: 
+      os: [ubuntu-latest, macos-latest, windows-latest]
+    environment:
+      name: staging
+      url: https://github.com/Potatismoose/CiCdInl-mning1/tree/develop
+    steps:
+    - run: echo ${{github.ref}}
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+      
+  unittests:
+    needs: development
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x 
+    - name: Unit tests
+      run: dotnet test "./CiCdInlämning1Tests/CiCdInlämning1Tests.csproj" --verbosity normal
+      
+  fulltest:
+    needs: staging
+    if: github.event_name == 'pull_request'
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix: 
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Unit test
+      run: dotnet test "./CiCdInlämning1Tests/CiCdInlämning1Tests.csproj" --verbosity normal
+    - name: Integration test
+      run: dotnet test "./CiCdInlämning1Tests/IntegrationTests/IntegrationTests.csproj" --verbosity normal
+  
+  release:
+    if: github.event_name == 'pull_request'
+    name: Releasing
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix: 
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    environment:
+      name: production
+      url: https://github.com/Potatismoose/CiCdInl-mning1/tree/master
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create Release
+        id: create_release
+        uses: create/release@v1
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with: 
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{github.ref}}
+          body: |
+           Changes in this release
+           - First change
+           - Second change
+          draft: false
+          prerelease: false

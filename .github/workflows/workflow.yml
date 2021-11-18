@@ -30,7 +30,7 @@ jobs:
 
   fulltest:
     needs: staging
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'push'
     runs-on: ${{ matrix.os }}
     strategy: 
       matrix: 

@@ -15,7 +15,6 @@ namespace CiCdAssignment1.Utilities.Tests
         [Test()]
         public void GetListOfUsersTest()
         {
-
             Random rand = new();
             var randomNr = rand.Next();
             ReadWrite.AddUserToList(new User(randomNr, "Börje Blekfis", "blekis1", "blekarn@hotmail.com", 15000, "Städare"));

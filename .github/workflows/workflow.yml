@@ -2,30 +2,13 @@ name: .NET
 
 on:
   push:
-    branches: [ benny*, hocke* ]
+    branches: [ develop ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master ]
 
 jobs:
-  development:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    environment:
-      name: development
-      url: https://github.com/Potatismoose/CiCdAssignment1/tree/develop
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore  
-      
   staging:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'push'
     runs-on: ${{ matrix.os }}
     strategy: 
      matrix: 
@@ -44,20 +27,7 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-      
-  unittests:
-    needs: development
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x 
-    - name: Unit tests
-      run: dotnet test "./CiCdAssignment1Tests/CiCdAssignment1Tests.csproj" --verbosity normal
-      
+
   fulltest:
     needs: staging
     if: github.event_name == 'pull_request'

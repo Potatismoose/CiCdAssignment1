@@ -13,7 +13,6 @@ namespace CiCdAssignment1
         {
             ReadWrite.CreateDummyData();
             Login.Start();
-
         }
     }
 }

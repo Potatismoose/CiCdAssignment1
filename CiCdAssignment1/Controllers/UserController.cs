@@ -2,11 +2,12 @@
 using CiCdAssignment1.Models.Users;
 using CiCdAssignment1.Utilities;
 using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CiCdAssignment1.Controllers
 {
-    class UserController
+    public class UserController
     {
         //Add and remove methods for users.
         public ISaveable CreateNewUser()
@@ -170,6 +171,33 @@ namespace CiCdAssignment1.Controllers
             {
                 return ("Email matches the criteria.", true);
             }
+        }
+
+        public bool RemoveUser(ISaveable removeThisUser) {
+            var filePath = ReadWrite.GetFilepath();
+
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+
+            foreach (var file in Directory.GetFiles(filePath))
+            {
+                if (Path.GetFileName(file) == $"{removeThisUser.Id}.user")
+                {
+                    File.Delete(file);
+                    if (!File.Exists(file))
+                    {
+                        return true;
+                    }
+                    else 
+                    { 
+                        return false;
+                    }
+                }
+            }
+
+            return false;
         }
 
     }

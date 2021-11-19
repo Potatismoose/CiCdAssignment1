@@ -49,10 +49,7 @@ jobs:
   release:
     if: github.event_name == 'pull_request'
     name: Releasing
-    runs-on: ${{ matrix.os }}
-    strategy: 
-      matrix: 
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ubuntu-latest
     environment:
       name: production
       url: https://github.com/Potatismoose/CiCdAssignment1/tree/master

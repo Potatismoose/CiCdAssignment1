@@ -9,7 +9,6 @@ namespace CiCdAssignment1.Controllers
 {
     public class UserController
     {
-        //Add and remove methods for users.
         public ISaveable CreateNewUser()
         {
 
@@ -61,6 +60,7 @@ namespace CiCdAssignment1.Controllers
 
             } while (salary <= 0);
         }
+
         private void InputRole(ref string role)
         {
             do
@@ -71,6 +71,7 @@ namespace CiCdAssignment1.Controllers
 
             } while (string.IsNullOrEmpty(role));
         }
+
         private void InputEmail(ref string email)
         {
             do
@@ -90,6 +91,7 @@ namespace CiCdAssignment1.Controllers
                 }
             } while (true);
         }
+
         private void InputPassword(ref string password)
         {
             bool correctPassword = false;
@@ -102,6 +104,7 @@ namespace CiCdAssignment1.Controllers
                 GiveUserFeedbackOnInput(ref password, result, userInputPassword);
             } while (!correctPassword);
         }
+
         private string InputUsername()
         {
             string username = default;
@@ -112,6 +115,7 @@ namespace CiCdAssignment1.Controllers
             } while (string.IsNullOrEmpty(username) || string.IsNullOrWhiteSpace(username));
             return username;
         }
+
         private void GiveUserFeedbackOnInput(ref string password, (string errorMsg, bool result) result, string userInputPassword)
         {
             if (result.result is false)
@@ -124,6 +128,7 @@ namespace CiCdAssignment1.Controllers
                 PrintFormating.PrintTextInGreen("Successfully stored");
             }
         }
+
         private (string errorMsg, bool result) ValidatePassword(string input)
         {
             var ErrorMessage = string.Empty;
@@ -134,7 +139,6 @@ namespace CiCdAssignment1.Controllers
 
             var hasNumber = new Regex(@"[0-9]+");
             var hasChar = new Regex(@"[A-Öa-ö]+");
-
 
             if (!hasChar.IsMatch(input))
             {
@@ -151,6 +155,7 @@ namespace CiCdAssignment1.Controllers
                 return ("Password matches the password criteria.", true);
             }
         }
+
         private (string errorMsg, bool result) ValidateEmail(string input)
         {
             var ErrorMessage = string.Empty;
@@ -190,8 +195,8 @@ namespace CiCdAssignment1.Controllers
                     {
                         return true;
                     }
-                    else 
-                    { 
+                    else
+                    {
                         return false;
                     }
                 }
@@ -199,6 +204,5 @@ namespace CiCdAssignment1.Controllers
 
             return false;
         }
-
     }
 }

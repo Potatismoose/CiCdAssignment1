@@ -79,8 +79,8 @@ namespace CiCdAssignment1.Menues
                                 errorMsg = wrongChoice;
                             }
                             else
-                            { 
-                            //TODO: Implement remove user
+                            {
+                                InputForRemoveUser();
                             }
                             break;
                         case 4:

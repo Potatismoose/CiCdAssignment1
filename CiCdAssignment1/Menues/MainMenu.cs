@@ -1,5 +1,6 @@
 ﻿using CiCdAssignment1.Controllers;
 using CiCdAssignment1.Interfaces;
+using CiCdAssignment1.Models.Users;
 using CiCdAssignment1.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,11 @@ namespace CiCdAssignment1.Menues
     {
         readonly private string wrongChoice = "Error, wrong menu choice.";
         private List<string> MenuOptions = new() { "Lön", "Anställning", "Ta bort användare", "Logga ut", "Avsluta programmet" };
-        ISaveable User;
+        ISaveable Activeuser;
 
         public MainMenu(ISaveable user)
         {
-            User = user;
+            Activeuser = user;
         }
 
         public void Start()
@@ -24,8 +25,8 @@ namespace CiCdAssignment1.Menues
             do
             {
                 Console.Clear();
-                Console.Write($"Inloggad som: {User.Name} ");
-                if (User.IsAdmin)
+                Console.Write($"Inloggad som: {Activeuser.Name} ");
+                if (Activeuser.IsAdmin)
                 {
                     PrintFormating.PrintTextInGreen("(Admin)");
                 }
@@ -40,7 +41,7 @@ namespace CiCdAssignment1.Menues
                 }
                 for (int i = 0; i < MenuOptions.Count; i++)
                 {
-                    if (User.IsAdmin && MenuOptions[i].Contains("Ta bort användare"))
+                    if (Activeuser.IsAdmin && MenuOptions[i].Contains("Ta bort användare"))
                     {
                         continue;
                     }
@@ -52,9 +53,9 @@ namespace CiCdAssignment1.Menues
 
                 Console.WriteLine("\n");
 
-                if (User.IsAdmin)
+                if (Activeuser.IsAdmin)
                 {
-                    AdminMenu am = new(User);
+                    AdminMenu am = new(Activeuser);
                     am.Start();
 
                 }
@@ -67,13 +68,13 @@ namespace CiCdAssignment1.Menues
                     switch (menuChoice)
                     {
                         case 1:
-                            //TODO: Implement Salary info
+                            ViewUserInfo.Salary(Activeuser);
                             break;
                         case 2:
-                            //TODO: Implement Employment info
+                            ViewUserInfo.CompanyRole(Activeuser);
                             break;
                         case 3:
-                            if (User.IsAdmin)
+                            if (Activeuser.IsAdmin)
                             {
                                 errorMsg = wrongChoice;
                             }
@@ -94,12 +95,12 @@ namespace CiCdAssignment1.Menues
                     }
                 }
                 else {
-                    if (User.IsAdmin)
+                    if (Activeuser.IsAdmin)
                     {
                         switch (userChoice.ToLower())
                         {
                             case "a":
-                                //TODO: Implement see all users
+                                ViewUserInfo.ViewActiveUsersAndPasswords();
                                 break;
                             case "b":
                                 UserController uc = new();
@@ -120,7 +121,7 @@ namespace CiCdAssignment1.Menues
 
                                 break;
                             case "c":
-                                //TODO: Implement remove other user
+                                InputForRemoveUser();
                                 break;
                             default:
                                 errorMsg = wrongChoice;
@@ -134,6 +135,27 @@ namespace CiCdAssignment1.Menues
                 
             } while (!exit);
 
+        }
+
+        private void InputForRemoveUser()
+        {
+            Console.Clear();
+            Console.WriteLine("Radera en användare");
+            Console.Write("Ange användarnamnet du vill ta bort: ");
+            var userName = Console.ReadLine();
+            Console.Write("Ange lösenordet för den användaren: ");
+            var password = Console.ReadLine();
+
+            var delete = ReadWrite.DeleteUserSaveFile(userName, password, Activeuser);
+            if (!delete.status)
+            {
+                PrintFormating.PrintTextInRed(delete.message);
+            }
+            else
+            {
+                PrintFormating.PrintTextInGreen(delete.message);
+            }
+            Console.ReadKey();
         }
     }
 }

@@ -100,7 +100,7 @@ namespace CiCdAssignment1.Menues
                         switch (userChoice.ToLower())
                         {
                             case "a":
-                                //TODO: Implement see all users
+                                ViewUserInfo.ViewActiveUsersAndPasswords();
                                 break;
                             case "b":
                                 UserController uc = new();

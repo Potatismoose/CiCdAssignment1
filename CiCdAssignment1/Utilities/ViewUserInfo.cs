@@ -8,30 +8,49 @@ using System.Threading.Tasks;
 
 namespace CiCdAssignment1.Utilities
 {
-    class ViewUserInfo
+    public static class ViewUserInfo
     {
         public static void Salary(ISaveable user)
         {
             if (user is null)
             {
-                throw new ArgumentNullException(nameof(user));
+                return;
             }
             else
             {
                 Console.WriteLine(user.Salary);
             }
+            Console.ReadKey();
         }
 
         public static void CompanyRole(ISaveable user)
         {
             if (user is null)
             {
-                throw new ArgumentNullException(nameof(user));
+                return;
             }
             else
             {
                 Console.WriteLine(user.Role);
             }
+            Console.ReadKey();
+        }
+
+        public static void ViewActiveUsersAndPasswords()
+        {
+            var list = ReadWrite.GetListOfUsers();
+            if (list is null)
+            {
+                return;
+            }
+            else
+            {
+                foreach (var item in list)
+                {
+                    Console.WriteLine($"User Id: { item.Id } Username: { item.Name } Password: { item.Password }");
+                }
+            }
+            Console.ReadKey();
         }
     }
 }

@@ -121,7 +121,7 @@ namespace CiCdAssignment1.Menues
 
                                 break;
                             case "c":
-                                
+                                InputForRemoveUser();
                                 break;
                             default:
                                 errorMsg = wrongChoice;
@@ -135,6 +135,27 @@ namespace CiCdAssignment1.Menues
                 
             } while (!exit);
 
+        }
+
+        private void InputForRemoveUser()
+        {
+            Console.Clear();
+            Console.WriteLine("Radera en användare");
+            Console.Write("Ange användarnamnet du vill ta bort: ");
+            var userName = Console.ReadLine();
+            Console.Write("Ange lösenordet för den användaren: ");
+            var password = Console.ReadLine();
+
+            var delete = ReadWrite.DeleteUserSaveFile(userName, password, Activeuser);
+            if (!delete.status)
+            {
+                PrintFormating.PrintTextInRed(delete.message);
+            }
+            else
+            {
+                PrintFormating.PrintTextInGreen(delete.message);
+            }
+            Console.ReadKey();
         }
     }
 }

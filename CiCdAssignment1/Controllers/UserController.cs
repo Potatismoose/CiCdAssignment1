@@ -173,7 +173,7 @@ namespace CiCdAssignment1.Controllers
             }
         }
 
-        public bool RemoveUser(User removeThisUser) {
+        public bool RemoveUser(ISaveable removeThisUser) {
             var filePath = ReadWrite.GetFilepath();
 
             if (!Directory.Exists(filePath))
@@ -186,7 +186,14 @@ namespace CiCdAssignment1.Controllers
                 if (Path.GetFileName(file) == $"{removeThisUser.Id}.user")
                 {
                     File.Delete(file);
-                    return true;
+                    if (!File.Exists(file))
+                    {
+                        return true;
+                    }
+                    else 
+                    { 
+                        return false;
+                    }
                 }
             }
 

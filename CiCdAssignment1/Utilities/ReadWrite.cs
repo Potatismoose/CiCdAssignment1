@@ -1,10 +1,9 @@
-﻿using CiCdAssignment1.Interfaces;
+﻿using CiCdAssignment1.Controllers;
+using CiCdAssignment1.Interfaces;
 using CiCdAssignment1.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CiCdAssignment1.Utilities
@@ -12,7 +11,7 @@ namespace CiCdAssignment1.Utilities
     public static class ReadWrite
     {
         readonly static string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\CiCD";
-        
+
         static List<ISaveable> listOfUsers = new();
 
         public static void CreateDummyData()
@@ -105,22 +104,41 @@ namespace CiCdAssignment1.Utilities
                         listOfUsers.Remove(user);
                     }
                 }
-                
+
             }
         }
 
-        public static void DeleteUserSaveFile(ISaveable user)
+        public static (bool status, string message) DeleteUserSaveFile(string userName, string password, ISaveable user)
         {
             if (user is not null)
             {
-                foreach (var file in Directory.GetFiles(filePath))
+                if (user.IsAdmin
+                    && userName == user.Name
+                    && password == user.Password)
                 {
-                    if (file == filePath + "\\" + user.Id + ".user")
-                        File.Delete(file);
-                    Deserialize();
+                    return (false, "You can not remove your own account");
+                }
+                foreach (var userToDelete in listOfUsers)
+                {
+                    if (userToDelete.Name == userName && userToDelete.Password == password)
+                    {
+                        UserController uc = new();
+                        if (uc.RemoveUser(userToDelete))
+                        {
+                            Deserialize();
+                            return (true, "The account is now deleted");
+                        }
+                        else
+                        {
+                            return (false, "Something failed");
+                        }
+                    }
+
                 }
             }
-            
+            return (false, "No such user was found. No one is deleted.");
+
+
         }
 
         public static void ReadFromFilesAndAddToListOfUsersAndUpdateEmployeeId()

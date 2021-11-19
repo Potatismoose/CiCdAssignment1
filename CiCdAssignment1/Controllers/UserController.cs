@@ -99,24 +99,28 @@ namespace CiCdAssignment1.Controllers
             {
                 Console.Write("Password: ");
                 var userInputPassword = Console.ReadLine();
-                var result = ValidatePassword(userInputPassword);
+                var result = ValidateUsernameAndPassword(userInputPassword, "password");
                 correctPassword = result.result;
-                GiveUserFeedbackOnInput(ref password, result, userInputPassword);
+                GiveUserFeedbackOnInput(ref password, "password", result, userInputPassword);
             } while (!correctPassword);
         }
 
         private string InputUsername()
         {
             string username = default;
+            bool correctInput = false;
             do
             {
                 Console.Write("Username: ");
-                username = Console.ReadLine();
-            } while (string.IsNullOrEmpty(username) || string.IsNullOrWhiteSpace(username));
+                var userInputUsername = Console.ReadLine();
+                var result = ValidateUsernameAndPassword(userInputUsername, "username");
+                correctInput = result.result;
+                GiveUserFeedbackOnInput(ref username, "username", result, userInputUsername);
+            } while (!correctInput);
             return username;
         }
 
-        private void GiveUserFeedbackOnInput(ref string password, (string errorMsg, bool result) result, string userInputPassword)
+        private void GiveUserFeedbackOnInput(ref string input, string type, (string errorMsg, bool result) result, string userInputPassword)
         {
             if (result.result is false)
             {
@@ -124,17 +128,24 @@ namespace CiCdAssignment1.Controllers
             }
             else
             {
-                password = userInputPassword;
+                if (type == "password")
+                { 
+                    input = userInputPassword;
+                }
+                else
+                {
+                    input = userInputPassword;
+                }
                 PrintFormating.PrintTextInGreen("Successfully stored");
             }
         }
 
-        private (string errorMsg, bool result) ValidatePassword(string input)
+        private (string errorMsg, bool result) ValidateUsernameAndPassword(string input, string type)
         {
             var ErrorMessage = string.Empty;
             if (string.IsNullOrWhiteSpace(input))
             {
-                return ("Password can not be empty", false);
+                return ($"{type} can not be empty", false);
             }
 
             var hasNumber = new Regex(@"[0-9]+");
@@ -142,17 +153,17 @@ namespace CiCdAssignment1.Controllers
 
             if (!hasChar.IsMatch(input))
             {
-                ErrorMessage = "Password should contain at least one letter.";
+                ErrorMessage = $"{type} should contain at least one letter.";
                 return (ErrorMessage, false);
             }
             else if (!hasNumber.IsMatch(input))
             {
-                ErrorMessage = "Password should contain at least one numeric value.";
+                ErrorMessage = $"{type} should contain at least one numeric value.";
                 return (ErrorMessage, false);
             }
             else
             {
-                return ("Password matches the password criteria.", true);
+                return ($"{type} matches the {type} criteria.", true);
             }
         }
 

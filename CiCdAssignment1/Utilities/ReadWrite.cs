@@ -118,6 +118,13 @@ namespace CiCdAssignment1.Utilities
                 {
                     return (false, "You can not remove your own account");
                 }
+                if (!user.IsAdmin
+                    && userName != user.Name
+                    )
+                {
+                    return (false, "No priviliges to delete other users");
+                }
+                
                 foreach (var userToDelete in listOfUsers)
                 {
                     if (userToDelete.Name == userName && userToDelete.Password == password)
@@ -135,8 +142,9 @@ namespace CiCdAssignment1.Utilities
                     }
 
                 }
+                return (false, "No such user was found. No one is deleted.");
             }
-            return (false, "No such user was found. No one is deleted.");
+            return (false, "You are not a valid user for this action");
 
 
         }

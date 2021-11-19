@@ -4,6 +4,7 @@ using CiCdAssignment1.Models.Users;
 using CiCdAssignment1.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CiCdAssignment1.Menues
 {
@@ -81,7 +82,10 @@ namespace CiCdAssignment1.Menues
                             else
                             {
                                 InputForRemoveUser();
-                                exit = true;
+                                if (ReadWrite.GetListOfUsers().FirstOrDefault(x => x.Id == Activeuser.Id) == null)
+                                {
+                                    exit = true;
+                                }
                             }
                             break;
                         case 4:
@@ -154,6 +158,7 @@ namespace CiCdAssignment1.Menues
             else
             {
                 PrintFormating.PrintTextInGreen(delete.message);
+                
             }
             Console.ReadKey();
         }

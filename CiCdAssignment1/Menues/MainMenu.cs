@@ -81,6 +81,7 @@ namespace CiCdAssignment1.Menues
                             else
                             {
                                 InputForRemoveUser();
+                                exit = true;
                             }
                             break;
                         case 4:
@@ -134,7 +135,6 @@ namespace CiCdAssignment1.Menues
                 }
                 
             } while (!exit);
-
         }
 
         private void InputForRemoveUser()

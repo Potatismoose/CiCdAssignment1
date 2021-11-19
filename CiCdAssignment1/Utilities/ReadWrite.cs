@@ -80,7 +80,17 @@ namespace CiCdAssignment1.Utilities
         {
             if (user is not null)
             {
-                listOfUsers.Add(user);
+                foreach (var userFromlist in listOfUsers)
+                {
+                    if (userFromlist.Email == user.Email && userFromlist.Name == user.Name)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        listOfUsers.Add(user);
+                    }
+                }
             }
         }
 
@@ -118,6 +128,11 @@ namespace CiCdAssignment1.Utilities
             ReadWrite.Deserialize();
             var lastUser = ReadWrite.GetListOfUsers()[^1];
             ReadWrite.WriteLastEmployeeIdToFile(lastUser.Id.ToString());
+        }
+
+        public static string GetFilepath()
+        {
+            return filePath;
         }
     }
 }

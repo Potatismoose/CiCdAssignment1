@@ -120,7 +120,7 @@ namespace CiCdAssignment1.Menues
 
                                 break;
                             case "c":
-                                //TODO: Implement remove other user
+                                
                                 break;
                             default:
                                 errorMsg = wrongChoice;

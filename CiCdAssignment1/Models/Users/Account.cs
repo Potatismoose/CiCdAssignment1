@@ -21,13 +21,17 @@ namespace CiCdAssignment1.Models.Users
             Role = role;
         }
 
+        public string Email { get; set; }
         public int Id { get; set; }
+        public bool IsAdmin { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public string Email { get; set; }
-        public bool IsAdmin { get; set; }
-        public int Salary { get; set; }
         public string Role { get; set; }
+        public int Salary { get; set; }
+        public string CompanyRole()
+        {
+            return Role;
+        }
 
         public override string ToString()
         {
@@ -38,12 +42,6 @@ namespace CiCdAssignment1.Models.Users
         {
             return Salary;
         }
-
-        public string CompanyRole()
-        {
-            return Role;
-        }
-
         public List<ISaveable> ViewActiveUsersAndPasswords()
         {
             return ReadWrite.GetListOfUsers();

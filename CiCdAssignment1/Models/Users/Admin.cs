@@ -1,5 +1,4 @@
-﻿using CiCdAssignment1.Utilities;
-using System;
+﻿using System;
 
 namespace CiCdAssignment1.Models.Users
 {

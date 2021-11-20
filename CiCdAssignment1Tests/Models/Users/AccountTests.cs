@@ -1,17 +1,20 @@
 ﻿using NUnit.Framework;
-using CiCdAssignment1.Models.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CiCdAssignment1.Models.Users.Tests
 {
     [TestFixture()]
     public class AccountTests
     {
-        User user = null;
+        private User user = null;
+
+        [Test()]
+        public void CompanyRoleTest()
+        {
+            // Act
+            var result = user.Role;
+            // Assert
+            Assert.That(result, Is.EqualTo("Rider"));
+        }
 
         [SetUp]
         public void SetUp()
@@ -42,16 +45,6 @@ namespace CiCdAssignment1.Models.Users.Tests
             // Assert
             Assert.That(result, Is.EqualTo(1600000));
         }
-
-        [Test()]
-        public void CompanyRoleTest()
-        {
-            // Act
-            var result = user.Role;
-            // Assert
-            Assert.That(result, Is.EqualTo("Rider"));
-        }
-
         [Test()]
         public void ViewActiveUsersAndPasswordsTest()
         {

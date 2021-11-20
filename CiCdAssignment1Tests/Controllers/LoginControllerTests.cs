@@ -1,12 +1,4 @@
 ﻿using NUnit.Framework;
-using CiCdAssignment1.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CiCdAssignment1.Models.Users;
-using CiCdAssignment1.Utilities;
 
 namespace CiCdAssignment1.Controllers.Tests
 {

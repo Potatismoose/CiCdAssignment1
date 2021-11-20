@@ -29,7 +29,7 @@ namespace IntegrationTests
             ReadWrite.AddUserToList(createdUser);
             var loggedInUser = LoginController.Login("Helge", "Gubbstrutt1");
             var listOfUsers = ReadWrite.GetListOfUsers();
-          
+
             //Assert
             Assert.Multiple(() =>
             {

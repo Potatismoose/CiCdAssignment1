@@ -5,7 +5,7 @@ using System;
 
 namespace CiCdAssignment1.Menues
 {
-    static class Login
+    internal static class Login
     {
         public static void Start()
         {
@@ -30,13 +30,11 @@ namespace CiCdAssignment1.Menues
                     {
                         errorMsg = "Felaktigt användarnamn eller lösenord";
                     }
-
                 } while (user is null);
 
                 MainMenu mm = new(user);
                 mm.Start();
             } while (true);
-            
         }
     }
 }

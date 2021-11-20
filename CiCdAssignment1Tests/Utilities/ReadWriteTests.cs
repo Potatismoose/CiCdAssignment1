@@ -20,7 +20,6 @@ namespace CiCdAssignment1.Utilities.Tests
             ReadWrite.AddUserToList(new User(randomNr, "Börje Blekfis", "blekis1", "blekarn@hotmail.com", 15000, "Städare"));
             var actual = ReadWrite.GetListOfUsers();
             Assert.That(actual.Count, Is.AtLeast(1));
-
         }
     }
 }

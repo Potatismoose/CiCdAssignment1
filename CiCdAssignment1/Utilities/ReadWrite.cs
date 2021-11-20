@@ -30,6 +30,7 @@ namespace CiCdAssignment1.Utilities
                 Deserialize();
             }
         }
+
         public static void Serialize(ISaveable user)
         {
             string fullFilePath = filePath + "\\" + user.Id + ".user";
@@ -104,7 +105,6 @@ namespace CiCdAssignment1.Utilities
                         listOfUsers.Remove(user);
                     }
                 }
-
             }
         }
 
@@ -145,8 +145,6 @@ namespace CiCdAssignment1.Utilities
                 return (false, "No such user was found. No one is deleted.");
             }
             return (false, "You are not a valid user for this action");
-
-
         }
 
         public static void ReadFromFilesAndAddToListOfUsersAndUpdateEmployeeId()

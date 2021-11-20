@@ -1,8 +1,8 @@
-﻿using System;
+﻿using CiCdAssignment1.Utilities;
+using System;
 
 namespace CiCdAssignment1.Models.Users
 {
-
     [Serializable]
     public class Admin : User
     {

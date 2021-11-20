@@ -1,5 +1,7 @@
 ﻿using CiCdAssignment1.Interfaces;
+using CiCdAssignment1.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace CiCdAssignment1.Models.Users
 {
@@ -30,6 +32,21 @@ namespace CiCdAssignment1.Models.Users
         public override string ToString()
         {
             return ($"{Name}, Har adminbehörighet: {IsAdmin}");
+        }
+
+        public int UserSalary()
+        {
+            return Salary;
+        }
+
+        public string CompanyRole()
+        {
+            return Role;
+        }
+
+        public List<ISaveable> ViewActiveUsersAndPasswords()
+        {
+            return ReadWrite.GetListOfUsers();
         }
     }
 }

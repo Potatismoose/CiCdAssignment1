@@ -1,6 +1,5 @@
 ﻿using CiCdAssignment1.Controllers;
 using CiCdAssignment1.Interfaces;
-using CiCdAssignment1.Models.Users;
 using CiCdAssignment1.Utilities;
 using System;
 using System.Collections.Generic;
@@ -58,7 +57,6 @@ namespace CiCdAssignment1.Menues
                 {
                     AdminMenu am = new(Activeuser);
                     am.Start();
-
                 }
 
                 Console.Write("Gör ditt val > ");
@@ -69,10 +67,14 @@ namespace CiCdAssignment1.Menues
                     switch (menuChoice)
                     {
                         case 1:
-                            ViewUserInfo.Salary(Activeuser);
+                            var salary = Activeuser.UserSalary();
+                            Console.WriteLine(salary);
+                            Console.ReadKey();
                             break;
                         case 2:
-                            ViewUserInfo.CompanyRole(Activeuser);
+                            var role = Activeuser.CompanyRole();
+                            Console.WriteLine(role);
+                            Console.ReadKey();
                             break;
                         case 3:
                             if (Activeuser.IsAdmin)
@@ -99,13 +101,20 @@ namespace CiCdAssignment1.Menues
                             break;
                     }
                 }
-                else {
+                else 
+                {
                     if (Activeuser.IsAdmin)
                     {
                         switch (userChoice.ToLower())
                         {
                             case "a":
-                                ViewUserInfo.ViewActiveUsersAndPasswords();
+                                var list = Activeuser.ViewActiveUsersAndPasswords();
+                                foreach (var item in list)
+                                {
+                                    Console.WriteLine($"User Id: { item.Id } Username: { item.Name } Password: { item.Password }");
+                                }
+
+                                Console.ReadKey();
                                 break;
                             case "b":
                                 UserController uc = new();
@@ -123,7 +132,6 @@ namespace CiCdAssignment1.Menues
                                 }
                                 
                                 Console.ReadKey();
-
                                 break;
                             case "c":
                                 InputForRemoveUser();
@@ -133,11 +141,12 @@ namespace CiCdAssignment1.Menues
                                 break;
                         }
                     }
-                    else {
+                    else
+                    {
                         errorMsg = wrongChoice;
                     }
                 }
-                
+
             } while (!exit);
         }
 
@@ -158,8 +167,8 @@ namespace CiCdAssignment1.Menues
             else
             {
                 PrintFormating.PrintTextInGreen(delete.message);
-                
             }
+
             Console.ReadKey();
         }
     }

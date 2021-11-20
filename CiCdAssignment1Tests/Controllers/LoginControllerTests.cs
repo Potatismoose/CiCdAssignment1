@@ -24,7 +24,5 @@ namespace CiCdAssignment1.Controllers.Tests
             //Assert
             Assert.That(result, Is.Null);
         }
-
-        
     }
 }

@@ -11,7 +11,6 @@ namespace CiCdAssignment1.Controllers
     {
         public ISaveable CreateNewUser()
         {
-
             Console.Clear();
             Console.WriteLine("Create new user\n");
             ISaveable user;
@@ -40,7 +39,6 @@ namespace CiCdAssignment1.Controllers
         {
             do
             {
-
                 if (!string.IsNullOrEmpty(errorMsg))
                 {
                     PrintFormating.PrintTextInRed(errorMsg);

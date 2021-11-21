@@ -8,7 +8,7 @@ jobs:
   print:
     runs-on: ubuntu-latest
     steps:
-    - run: echo ${{github.event.ref}}
+    - run: echo "Github ref is ${{ github.event.ref }} - and github event ref type is ${{ github.event.ref_type }}"
   staging:
     if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/benny*' || github.event.ref =='refs/heads/hocke*'
     runs-on: ${{ matrix.os }}

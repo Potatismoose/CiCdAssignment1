@@ -8,7 +8,7 @@ on:
 
 jobs:
   staging:
-    if: github.event_name == 'push' && github.event.ref =='refs/heads/develop'
+    if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/benny*' || github.event.ref =='refs/heads/hocke*'
     runs-on: ${{ matrix.os }}
     strategy: 
      matrix: 
@@ -30,7 +30,7 @@ jobs:
 
   fulltest:
     needs: staging
-    if: github.event_name == 'push'
+    if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/benny*' || github.event.ref =='refs/heads/hocke*'
     runs-on: ${{ matrix.os }}
     strategy: 
       matrix: 
@@ -47,7 +47,7 @@ jobs:
       run: dotnet test "./IntegrationTests/IntegrationTests.csproj" --verbosity normal
   
   release:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/develop'
     name: Releasing
     runs-on: ubuntu-latest
     environment:

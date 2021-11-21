@@ -2,7 +2,7 @@
 
 namespace CiCdAssignment1.Utilities
 {
-    static class PrintFormating
+    internal static class PrintFormating
     {
         public static void PrintTextInRed(string text)
         {

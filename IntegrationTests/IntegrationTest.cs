@@ -29,15 +29,15 @@ namespace IntegrationTests
             ReadWrite.AddUserToList(createdUser);
             var loggedInUser = LoginController.Login("Helge", "Gubbstrutt1");
             var listOfUsers = ReadWrite.GetListOfUsers();
-            
+            var userSalary = loggedInUser.UserSalary();
 
             //Assert
             Assert.Multiple(() =>
             {
                 Assert.That(loggedInUser, Is.InstanceOf<Account>());
                 Assert.That(listOfUsers.Any(p => p.Id == loggedInUser.Id));
+                Assert.That(userSalary, Is.EqualTo(12000));
             });
-
         }
     }
 }

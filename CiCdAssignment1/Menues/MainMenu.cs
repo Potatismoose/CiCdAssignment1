@@ -1,18 +1,17 @@
 ﻿using CiCdAssignment1.Controllers;
 using CiCdAssignment1.Interfaces;
-using CiCdAssignment1.Models.Users;
 using CiCdAssignment1.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CiCdAssignment1.Menues
 {
-    class MainMenu
+    internal class MainMenu
     {
-        readonly private string wrongChoice = "Error, wrong menu choice.";
+        private readonly string wrongChoice = "Error, wrong menu choice.";
+        private ISaveable Activeuser;
         private List<string> MenuOptions = new() { "Lön", "Anställning", "Ta bort användare", "Logga ut", "Avsluta programmet" };
-        ISaveable Activeuser;
-
         public MainMenu(ISaveable user)
         {
             Activeuser = user;
@@ -57,7 +56,6 @@ namespace CiCdAssignment1.Menues
                 {
                     AdminMenu am = new(Activeuser);
                     am.Start();
-
                 }
 
                 Console.Write("Gör ditt val > ");
@@ -68,40 +66,61 @@ namespace CiCdAssignment1.Menues
                     switch (menuChoice)
                     {
                         case 1:
-                            ViewUserInfo.Salary(Activeuser);
+                            var salary = Activeuser.UserSalary();
+                            Console.WriteLine(salary);
+                            Console.ReadKey();
                             break;
+
                         case 2:
-                            ViewUserInfo.CompanyRole(Activeuser);
+                            var role = Activeuser.CompanyRole();
+                            Console.WriteLine(role);
+                            Console.ReadKey();
                             break;
+
                         case 3:
                             if (Activeuser.IsAdmin)
                             {
                                 errorMsg = wrongChoice;
                             }
                             else
-                            { 
-                            //TODO: Implement remove user
+                            {
+                                InputForRemoveUser();
+                                if (ReadWrite.GetListOfUsers().FirstOrDefault(x => x.Id == Activeuser.Id) == null)
+                                {
+                                    exit = true;
+                                }
                             }
                             break;
+
                         case 4:
                             exit = true;
                             break;
+
                         case 5:
                             Environment.Exit(1);
                             break;
+
                         default:
                             errorMsg = wrongChoice;
                             break;
                     }
                 }
-                else {
+                else
+                {
                     if (Activeuser.IsAdmin)
                     {
                         switch (userChoice.ToLower())
                         {
                             case "a":
-                                //TODO: Implement see all users
+                                var list = Activeuser.ViewActiveUsersAndPasswords();
+                                foreach (var item in list)
+                                {
+                                    Console.WriteLine($"User Id: { item.Id } Username: { item.Name } Password: { item.Password } Role: { item.Role }");
+                                }
+
+                                Console.ReadKey();
                                 break;
+
                             case "b":
                                 UserController uc = new();
                                 var createdUser = uc.CreateNewUser();
@@ -112,29 +131,31 @@ namespace CiCdAssignment1.Menues
                                     Console.WriteLine($"Skapade email: {createdUser.Email}");
                                     Console.WriteLine($"Skapade lön: {createdUser.Salary}");
                                     Console.WriteLine($"Skapade Id: {createdUser.Id}");
+                                    Console.WriteLine($"Skapade Role: {createdUser.Role}");
                                 }
-                                else {
+                                else
+                                {
                                     PrintFormating.PrintTextInRed("Användaren kunde inte skapas");
                                 }
-                                
-                                Console.ReadKey();
 
+                                Console.ReadKey();
                                 break;
+
                             case "c":
                                 InputForRemoveUser();
                                 break;
+
                             default:
                                 errorMsg = wrongChoice;
                                 break;
                         }
                     }
-                    else {
+                    else
+                    {
                         errorMsg = wrongChoice;
                     }
                 }
-                
             } while (!exit);
-
         }
 
         private void InputForRemoveUser()
@@ -155,6 +176,7 @@ namespace CiCdAssignment1.Menues
             {
                 PrintFormating.PrintTextInGreen(delete.message);
             }
+
             Console.ReadKey();
         }
     }

@@ -1,17 +1,14 @@
 name: .NET
 
 on:
+  push:
+    branches: [ develop ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master ]
 
 jobs:
-  print:
-    runs-on: ubuntu-latest
-    steps:
-    - run: | 
-        echo "Github ref is ${{ github.event.ref }} - and github event ref type is ${{ github.event.ref_type }}"
   staging:
-    if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/benny*' || github.event.ref =='refs/heads/hocke*'
+    if: github.event_name == 'push'
     runs-on: ${{ matrix.os }}
     strategy: 
      matrix: 
@@ -33,7 +30,7 @@ jobs:
 
   fulltest:
     needs: staging
-    if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/benny*' || github.event.ref =='refs/heads/hocke*'
+    if: github.event_name == 'push'
     runs-on: ${{ matrix.os }}
     strategy: 
       matrix: 

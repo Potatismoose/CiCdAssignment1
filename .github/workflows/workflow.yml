@@ -5,6 +5,10 @@ on:
     branches: [ master, develop ]
 
 jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo ${{github.event.ref}}
   staging:
     if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/benny*' || github.event.ref =='refs/heads/hocke*'
     runs-on: ${{ matrix.os }}

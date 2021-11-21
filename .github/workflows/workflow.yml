@@ -47,7 +47,7 @@ jobs:
       run: dotnet test "./IntegrationTests/IntegrationTests.csproj" --verbosity normal
   
   release:
-    if: github.event_name == 'pull_request' && github.event.ref =='refs/heads/develop'
+    if: github.event_name == 'pull_request'
     name: Releasing
     runs-on: ubuntu-latest
     environment:

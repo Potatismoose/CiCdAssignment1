@@ -23,6 +23,7 @@ namespace CiCdAssignment1.Menues
             {
                 Console.WriteLine($"{MenuLetter[i]}. {MenuOptions[i]}");
             }
+
         }
     }
 }

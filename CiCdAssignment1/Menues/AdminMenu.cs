@@ -17,8 +17,6 @@ namespace CiCdAssignment1.Menues
 
         public void Start()
         {
-            bool exit = false;
-
             Console.WriteLine();
             Console.WriteLine($"Adminmeny");
 

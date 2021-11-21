@@ -19,7 +19,6 @@ namespace CiCdAssignment1.Menues
         {
             Console.WriteLine();
             Console.WriteLine($"Adminmeny");
-
             for (int i = 0; i < MenuOptions.Count; i++)
             {
                 Console.WriteLine($"{MenuLetter[i]}. {MenuOptions[i]}");

@@ -16,18 +16,26 @@ namespace CiCdAssignment1.Utilities
 
         public static void AddUserToList(ISaveable user)
         {
+            bool userShallBeAdded = true;
             if (user is not null)
             {
-                foreach (var userFromlist in listOfUsers)
+                if (listOfUsers.Count is not 0)
                 {
-                    if (userFromlist.Email == user.Email && userFromlist.Name == user.Name)
+                    foreach (var userFromlist in listOfUsers)
                     {
-                        break;
+                        if (userFromlist.Email == user.Email && userFromlist.Name == user.Name)
+                        {
+                            userShallBeAdded = false;
+                            break;
+                        }
                     }
-                    else
+                    if (userShallBeAdded)
                     {
                         listOfUsers.Add(user);
                     }
+                }
+                else {
+                    listOfUsers.Add(user);
                 }
             }
         }

@@ -2,19 +2,17 @@
 using CiCdAssignment1.Models.Users;
 using CiCdAssignment1.Utilities;
 using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CiCdAssignment1.Controllers
 {
-    class UserController
+    public class UserController
     {
-        //Add and remove methods for users.
         public ISaveable CreateNewUser()
         {
-
             Console.Clear();
             Console.WriteLine("Create new user\n");
-            ISaveable user;
             string errorMsg = default;
             string username = default;
             string password = default;
@@ -36,40 +34,54 @@ namespace CiCdAssignment1.Controllers
             return createdUser;
         }
 
-        private void InputSalary(ref string errorMsg, ref int salary)
+        public bool RemoveUser(ISaveable removeThisUser)
         {
-            do
+            var filePath = ReadWrite.GetFilepath();
+
+            if (!Directory.Exists(filePath))
             {
+                Directory.CreateDirectory(filePath);
+            }
 
-                if (!string.IsNullOrEmpty(errorMsg))
+            foreach (var file in Directory.GetFiles(filePath))
+            {
+                if (Path.GetFileName(file) == $"{removeThisUser.Id}.user")
                 {
-                    PrintFormating.PrintTextInRed(errorMsg);
+                    File.Delete(file);
+                    if (!File.Exists(file))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
+            }
 
-                Console.Write("Salary: ");
-                var inputIsInt = int.TryParse(Console.ReadLine(), out int usersSalary);
+            return false;
+        }
 
-                if (inputIsInt && usersSalary > 0)
+        private void GiveUserFeedbackOnInput(ref string input, string type, (string errorMsg, bool result) result, string userInputPassword)
+        {
+            if (result.result is false)
+            {
+                PrintFormating.PrintTextInRed(result.errorMsg);
+            }
+            else
+            {
+                if (type == "password")
                 {
-                    salary = usersSalary;
+                    input = userInputPassword;
                 }
                 else
                 {
-                    errorMsg = "Wrong salary or input. Must be more then 0 kr.";
+                    input = userInputPassword;
                 }
-
-            } while (salary <= 0);
+                PrintFormating.PrintTextInGreen("Successfully stored");
+            }
         }
-        private void InputRole(ref string role)
-        {
-            do
-            {
-                Console.Write("Role: ");
-                var userInput = Console.ReadLine();
-                role = userInput;
 
-            } while (string.IsNullOrEmpty(role));
-        }
         private void InputEmail(ref string email)
         {
             do
@@ -89,6 +101,7 @@ namespace CiCdAssignment1.Controllers
                 }
             } while (true);
         }
+
         private void InputPassword(ref string password)
         {
             bool correctPassword = false;
@@ -96,59 +109,57 @@ namespace CiCdAssignment1.Controllers
             {
                 Console.Write("Password: ");
                 var userInputPassword = Console.ReadLine();
-                var result = ValidatePassword(userInputPassword);
+                var result = ValidateUsernameAndPassword(userInputPassword, "password");
                 correctPassword = result.result;
-                GiveUserFeedbackOnInput(ref password, result, userInputPassword);
+                GiveUserFeedbackOnInput(ref password, "password", result, userInputPassword);
             } while (!correctPassword);
+        }
+
+        private void InputRole(ref string role)
+        {
+            do
+            {
+                Console.Write("Role: ");
+                var userInput = Console.ReadLine();
+                role = userInput;
+            } while (string.IsNullOrEmpty(role));
+        }
+
+        private void InputSalary(ref string errorMsg, ref int salary)
+        {
+            do
+            {
+                if (!string.IsNullOrEmpty(errorMsg))
+                {
+                    PrintFormating.PrintTextInRed(errorMsg);
+                }
+
+                Console.Write("Salary: ");
+                var inputIsInt = int.TryParse(Console.ReadLine(), out int usersSalary);
+
+                if (inputIsInt && usersSalary > 0)
+                {
+                    salary = usersSalary;
+                }
+                else
+                {
+                    errorMsg = "Wrong salary or input. Must be more then 0 kr.";
+                }
+            } while (salary <= 0);
         }
         private string InputUsername()
         {
             string username = default;
+            bool correctInput = false;
             do
             {
                 Console.Write("Username: ");
-                username = Console.ReadLine();
-            } while (string.IsNullOrEmpty(username) || string.IsNullOrWhiteSpace(username));
+                var userInputUsername = Console.ReadLine();
+                var result = ValidateUsernameAndPassword(userInputUsername, "username");
+                correctInput = result.result;
+                GiveUserFeedbackOnInput(ref username, "username", result, userInputUsername);
+            } while (!correctInput);
             return username;
-        }
-        private void GiveUserFeedbackOnInput(ref string password, (string errorMsg, bool result) result, string userInputPassword)
-        {
-            if (result.result is false)
-            {
-                PrintFormating.PrintTextInRed(result.errorMsg);
-            }
-            else
-            {
-                password = userInputPassword;
-                PrintFormating.PrintTextInGreen("Successfully stored");
-            }
-        }
-        private (string errorMsg, bool result) ValidatePassword(string input)
-        {
-            var ErrorMessage = string.Empty;
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return ("Password can not be empty", false);
-            }
-
-            var hasNumber = new Regex(@"[0-9]+");
-            var hasChar = new Regex(@"[A-Öa-ö]+");
-
-
-            if (!hasChar.IsMatch(input))
-            {
-                ErrorMessage = "Password should contain at least one letter.";
-                return (ErrorMessage, false);
-            }
-            else if (!hasNumber.IsMatch(input))
-            {
-                ErrorMessage = "Password should contain at least one numeric value.";
-                return (ErrorMessage, false);
-            }
-            else
-            {
-                return ("Password matches the password criteria.", true);
-            }
         }
         private (string errorMsg, bool result) ValidateEmail(string input)
         {
@@ -165,12 +176,37 @@ namespace CiCdAssignment1.Controllers
                 ErrorMessage = "Email does not match criteria";
                 return (ErrorMessage, false);
             }
-
             else
             {
                 return ("Email matches the criteria.", true);
             }
         }
 
+        private (string errorMsg, bool result) ValidateUsernameAndPassword(string input, string type)
+        {
+            var ErrorMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return ($"{type} can not be empty", false);
+            }
+
+            var hasNumber = new Regex(@"[0-9]+");
+            var hasChar = new Regex(@"[A-Öa-ö]+");
+
+            if (!hasChar.IsMatch(input))
+            {
+                ErrorMessage = $"{type} should contain at least one letter.";
+                return (ErrorMessage, false);
+            }
+            else if (!hasNumber.IsMatch(input))
+            {
+                ErrorMessage = $"{type} should contain at least one numeric value.";
+                return (ErrorMessage, false);
+            }
+            else
+            {
+                return ($"{type} matches the {type} criteria.", true);
+            }
+        }
     }
 }

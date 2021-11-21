@@ -2,7 +2,6 @@
 
 namespace CiCdAssignment1.Models.Users
 {
-
     [Serializable]
     public class Admin : User
     {

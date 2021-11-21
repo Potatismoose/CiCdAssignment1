@@ -1,19 +1,44 @@
-﻿using CiCdAssignment1.Interfaces;
+﻿using CiCdAssignment1.Controllers;
+using CiCdAssignment1.Interfaces;
 using CiCdAssignment1.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CiCdAssignment1.Utilities
 {
     public static class ReadWrite
     {
-        readonly static string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\CiCD";
-        
-        static List<ISaveable> listOfUsers = new();
+        private static readonly string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\CiCD";
+
+        private static List<ISaveable> listOfUsers = new();
+
+        public static void AddUserToList(ISaveable user)
+        {
+            bool userShallBeAdded = true;
+            if (user is not null)
+            {
+                if (listOfUsers.Count is not 0)
+                {
+                    foreach (var userFromlist in listOfUsers)
+                    {
+                        if (userFromlist.Email == user.Email && userFromlist.Name == user.Name)
+                        {
+                            userShallBeAdded = false;
+                            break;
+                        }
+                    }
+                    if (userShallBeAdded)
+                    {
+                        listOfUsers.Add(user);
+                    }
+                }
+                else {
+                    listOfUsers.Add(user);
+                }
+            }
+        }
 
         public static void CreateDummyData()
         {
@@ -31,16 +56,43 @@ namespace CiCdAssignment1.Utilities
                 Deserialize();
             }
         }
-        public static void Serialize(ISaveable user)
+
+        public static (bool status, string message) DeleteUserSaveFile(string userName, string password, ISaveable user)
         {
-            string fullFilePath = filePath + "\\" + user.Id + ".user";
-            FileStream fileStream;
-            BinaryFormatter bf = new();
-            if (File.Exists(fullFilePath)) File.Delete(fullFilePath);
-            fileStream = File.Create(fullFilePath);
-            bf.Serialize(fileStream, user);
-            fileStream.Close();
-            WriteLastEmployeeIdToFile(user.Id.ToString());
+            if (user is not null)
+            {
+                if (user.IsAdmin
+                    && userName == user.Name
+                    && password == user.Password)
+                {
+                    return (false, "You can not remove your own account");
+                }
+                if (!user.IsAdmin
+                    && userName != user.Name
+                    )
+                {
+                    return (false, "No priviliges to delete other users");
+                }
+
+                foreach (var userToDelete in listOfUsers)
+                {
+                    if (userToDelete.Name == userName && userToDelete.Password == password)
+                    {
+                        UserController uc = new();
+                        if (uc.RemoveUser(userToDelete))
+                        {
+                            Deserialize();
+                            return (true, "The account is now deleted");
+                        }
+                        else
+                        {
+                            return (false, "Something failed");
+                        }
+                    }
+                }
+                return (false, "No such user was found. No one is deleted.");
+            }
+            return (false, "You are not a valid user for this action");
         }
 
         public static void Deserialize()
@@ -59,16 +111,9 @@ namespace CiCdAssignment1.Utilities
             }
         }
 
-        async public static void WriteLastEmployeeIdToFile(string employeeId)
+        public static string GetFilepath()
         {
-            var employeeFile = filePath + "\\" + "employeeId.info";
-            await File.WriteAllTextAsync(employeeFile, employeeId);
-        }
-
-        public static int ReadLastEmployeeIdFromFile()
-        {
-            var employeeFile = filePath + "\\" + "employeeId.info";
-            return Convert.ToInt32(File.ReadAllText(employeeFile));
+            return filePath;
         }
 
         public static List<ISaveable> GetListOfUsers()
@@ -76,12 +121,17 @@ namespace CiCdAssignment1.Utilities
             return listOfUsers;
         }
 
-        public static void AddUserToList(ISaveable user)
+        public static void ReadFromFilesAndAddToListOfUsersAndUpdateEmployeeId()
         {
-            if (user is not null)
-            {
-                listOfUsers.Add(user);
-            }
+            ReadWrite.Deserialize();
+            var lastUser = ReadWrite.GetListOfUsers()[^1];
+            ReadWrite.WriteLastEmployeeIdToFile(lastUser.Id.ToString());
+        }
+
+        public static int ReadLastEmployeeIdFromFile()
+        {
+            var employeeFile = filePath + "\\" + "employeeId.info";
+            return Convert.ToInt32(File.ReadAllText(employeeFile));
         }
 
         public static void RemoveUserFromList(ISaveable user)
@@ -95,29 +145,24 @@ namespace CiCdAssignment1.Utilities
                         listOfUsers.Remove(user);
                     }
                 }
-                
             }
         }
 
-        public static void DeleteUserSaveFile(ISaveable user)
+        public static void Serialize(ISaveable user)
         {
-            if (user is not null)
-            {
-                foreach (var file in Directory.GetFiles(filePath))
-                {
-                    if (file == filePath + "\\" + user.Id + ".user")
-                        File.Delete(file);
-                    Deserialize();
-                }
-            }
-            
+            string fullFilePath = filePath + "\\" + user.Id + ".user";
+            FileStream fileStream;
+            BinaryFormatter bf = new();
+            if (File.Exists(fullFilePath)) File.Delete(fullFilePath);
+            fileStream = File.Create(fullFilePath);
+            bf.Serialize(fileStream, user);
+            fileStream.Close();
+            WriteLastEmployeeIdToFile(user.Id.ToString());
         }
-
-        public static void ReadFromFilesAndAddToListOfUsersAndUpdateEmployeeId()
+        public static async void WriteLastEmployeeIdToFile(string employeeId)
         {
-            ReadWrite.Deserialize();
-            var lastUser = ReadWrite.GetListOfUsers()[^1];
-            ReadWrite.WriteLastEmployeeIdToFile(lastUser.Id.ToString());
+            var employeeFile = filePath + "\\" + "employeeId.info";
+            await File.WriteAllTextAsync(employeeFile, employeeId);
         }
     }
 }

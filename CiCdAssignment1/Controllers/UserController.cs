@@ -13,7 +13,6 @@ namespace CiCdAssignment1.Controllers
         {
             Console.Clear();
             Console.WriteLine("Create new user\n");
-            ISaveable user;
             string errorMsg = default;
             string username = default;
             string password = default;
